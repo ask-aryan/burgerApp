@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CartApp {
+public class CartApp implements ActionListener {
     JFrame frame;
     List<String> orderedItems = new ArrayList<>(); 
     int totalAmount = 0;
@@ -15,6 +15,13 @@ public class CartApp {
     JTextField amountTextField = new JTextField(10);
     JTextField quantity = new JTextField(5);
     JTextArea table = new JTextArea(20, 10);
+    private final JPanel mainPanel;
+    private final JPanel panel1;
+    private final JPanel panel2;
+    private final JPanel panel3;
+    private final JRadioButton r1;
+    private final JRadioButton r2;
+    private final JRadioButton r3;
 
     public CartApp() {
         frame = new JFrame("Burger Company");
@@ -25,7 +32,7 @@ public class CartApp {
         Container c = frame.getContentPane();
         c.setLayout(null);
            
-        ImageIcon icon = new ImageIcon("src\\burger (2).png"); 
+        var icon = new ImageIcon("burgerApp/src/burger (2).png"); 
         JLabel pic1 = new JLabel(icon); 
         JLabel pic2 = new JLabel(icon);
         JLabel pic3 = new JLabel(icon);
@@ -50,8 +57,33 @@ public class CartApp {
         JButton checkoutButton = new JButton("Checkout");
         JButton clearButton =new JButton("Clear Cart");
 
+        r1=new JRadioButton("Cash");    
+        r2=new JRadioButton("Card");
+        r3=new JRadioButton("UPI");
+        r1.setSelected(true);
+
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        panel1 = createPanel1Content();
+        panel2 = createPanel2Content();
+        panel3 = createPanel3Content();
+
+        ButtonGroup bg= new ButtonGroup();
+        bg.add(r1);bg.add(r2);bg.add(r3);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(r1);
+        buttonPanel.add(r2);
+        buttonPanel.add(r3);
+
+        mainPanel.add(buttonPanel, BorderLayout.NORTH);
+        mainPanel.add(panel1, BorderLayout.CENTER);
+
         amountTextField.setEditable(false);
         table.setEditable(false);
+
+        
            
         clearButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -120,6 +152,10 @@ public class CartApp {
                 System.out.println("Order is successfully Placed");
             }
           });
+          r1.addActionListener((ActionListener) this);
+          r2.addActionListener((ActionListener) this);
+          r3.addActionListener((ActionListener) this);
+          
         
         mcVaggieLabel.setBounds(20, 20, 80, 30);
         mcVaggiePriceLabel.setBounds(25, 160, 80, 30);
@@ -139,13 +175,16 @@ public class CartApp {
         addAalu.setBounds(320, 200, 50, 30);
         remAalu.setBounds(375, 200, 50, 30);
 
-        amountTextField.setBounds(180,300,200,50);
-        checkoutButton.setBounds(420,300,100,50);
-        quantity.setBounds(20, 300, 100, 50 );
-        
         listOfitems.setBounds(470, 20, 120, 30);
         table.setBounds(470,70,120,150);
-        clearButton.setBounds(20, 420, 100, 30);
+        quantity.setBounds(20, 300, 100, 50 );
+        amountTextField.setBounds(180,300,200,50);
+        // r1.setBounds(420,300,60,30);
+        // r2.setBounds(490,300,60,30);
+        // r3.setBounds(560,300,60,30); 
+        mainPanel.setBounds(420,300,250,200);
+        clearButton.setBounds(50, 420, 100, 50);
+        checkoutButton.setBounds(250,420,100,50);
 
         frame.add(pic1);
         frame.add(pic2);
@@ -169,10 +208,58 @@ public class CartApp {
         frame.add(remMaha);
         frame.add(remAalu);
         frame.add(quantity);
+        //frame.add(r1);frame.add(r2);frame.add(r3);
+        frame.add(mainPanel);
 
         newTotal();   
         frame.setVisible(true);
     }
+
+    private JPanel createPanel1Content() {
+      // Create content for panel 1 (replace with your specific content)
+      JPanel panel = new JPanel();
+      panel.add(new JLabel("This is the content for Option 1."));
+      return panel;
+  }
+
+  private JPanel createPanel2Content() {
+      // Create content for panel 2 (replace with your specific content)
+      JPanel panel = new JPanel();
+      panel.add(new JLabel("This is the content for Option 2."));
+      return panel;
+  }
+
+  private JPanel createPanel3Content() {
+      // Create content for panel 3 (replace with your specific content)
+      JPanel panel = new JPanel();
+      panel.add(new JLabel("This is the content for Option 3."));
+      return panel;
+  }
+  
+  @Override
+    public void actionPerformed(ActionEvent e) {
+        // Handle radio button selection
+        JRadioButton selectedButton = (JRadioButton) e.getSource();
+
+        if (selectedButton == r1) {
+            mainPanel.remove(panel2);
+            mainPanel.remove(panel3);
+            mainPanel.add(panel1, BorderLayout.CENTER);
+        } else if (selectedButton == r2) {
+            mainPanel.remove(panel1);
+            mainPanel.remove(panel3);
+            mainPanel.add(panel2, BorderLayout.CENTER);
+        } else if (selectedButton == r3) {
+            mainPanel.remove(panel1);
+            mainPanel.remove(panel2);
+            mainPanel.add(panel3, BorderLayout.CENTER);
+        }
+
+        // Optionally, revalidate and repaint for immediate UI update
+        mainPanel.revalidate();
+        mainPanel.repaint();
+    }
+
     private void addItem(String itemName, int price) {
         orderedItems.add(itemName+"\n");
         totalAmount += price;
